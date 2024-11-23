@@ -17,7 +17,7 @@ class PeopleControllerTest < ActionDispatch::IntegrationTest
 
   test "should create person" do
     assert_difference("Person.count") do
-      post people_url, params: { person: { name: @person.name, auth0_id: '123456' } }, as: :json, headers: auth_headers
+      post people_url, params: { person: { name: @person.name, auth0_id: "123456" } }, as: :json, headers: auth_headers
     end
 
     assert_response :created

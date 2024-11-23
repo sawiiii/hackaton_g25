@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :messages
 
 
-  #post "people/projects/new", to: "projects#create"
+  # post "people/projects/new", to: "projects#create"
 
   resources :people, param: :auth0_id do
     resources :projects do
@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   end
 
   resources :positions do
-    resources :applications, only: [:create]
+    resources :applications, only: [ :create ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
