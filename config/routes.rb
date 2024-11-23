@@ -15,6 +15,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :people do
+    get "/applications", to: "applications#user_applications"
+    get "/applications/:id", to: "applications#user_application"
+  end
+
   resources :positions do
     resources :applications, only: [ :create ]
   end
