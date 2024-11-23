@@ -21,6 +21,7 @@ class ProjectsController < ApplicationController
     )
   end
 
+  
   # GET /projects/1
   def show
     render json: @project.as_json(
