@@ -5,14 +5,20 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
+    # filtro para no mostrar los que estén llenos
     if params[:person_auth0_id].present?
       @person = Person.find_by(auth0_id: params[:person_auth0_id])
       @projects = @person.projects
     else
-      @projects = Project.all
+      @projects = Project.all.with_more_vacancies.not_mine(current_user.id).includes(:positions)
     end
 
-    render json: @projects
+    render json: @projects.as_json(
+      include: {
+        positions: {},
+        owner: { only: [:name, :auth0_id] }
+      }
+    )
   end
 
   # GET /projects/1
@@ -58,7 +64,7 @@ class ProjectsController < ApplicationController
   end
 
   def validate_current_user
-    if current_user.auth0_id != params[:person_auth0_id]
+    if current_user.nil? || current_user&.auth0_id != params[:person_auth0_id]
       render json: { message: "Forbidden" }, status: :forbidden
     end
   end

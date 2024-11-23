@@ -17,16 +17,16 @@ project3 = Project.create!(name: "Project Gamma", description: "Description for 
 project4 = Project.create!(name: "Project Delta", description: "Description for Project Delta", owner: person2)
 
 # Create sample positions
-position1 = Position.create!(name: "Developer", project: project1)
-position2 = Position.create!(name: "Designer", project: project1)
-position3 = Position.create!(name: "Manager", project: project2)
-position4 = Position.create!(name: "Tester", project: project3)
-position5 = Position.create!(name: "Analyst", project: project4)
-position6 = Position.create!(name: "Architect", project: project1)
-position7 = Position.create!(name: "Product Owner", project: project2)
-position8 = Position.create!(name: "Scrum Master", project: project3)
-position9 = Position.create!(name: "DevOps Engineer", project: project4)
-position10 = Position.create!(name: "QA Engineer", project: project1)
+position1 = Position.create!(name: "Developer", project: project1, vacancies: 2)
+position2 = Position.create!(name: "Designer", project: project1, vacancies: 2)
+position3 = Position.create!(name: "Manager", project: project2, vacancies: 2)
+position4 = Position.create!(name: "Tester", project: project3, vacancies: 2)
+position5 = Position.create!(name: "Analyst", project: project4, vacancies: 2)
+position6 = Position.create!(name: "Architect", project: project1, vacancies: 2)
+position7 = Position.create!(name: "Product Owner", project: project2, vacancies: 2)
+position8 = Position.create!(name: "Scrum Master", project: project3, vacancies: 2)
+position9 = Position.create!(name: "DevOps Engineer", project: project4, vacancies: 2)
+position10 = Position.create!(name: "QA Engineer", project: project1, vacancies: 2)
 
 # Create sample applications
 Application.create!(motivation: "I am very motivated to join this project.", position: position1, person: person1, status: :pending)
