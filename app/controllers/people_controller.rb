@@ -1,14 +1,23 @@
 class PeopleController < ApplicationController
 
-  before_action :authorize
+  #before_action :authorize
   before_action :set_person, only: %i[ show update destroy ]
 
   # GET /people
   def index
-    @people = Person.all
-
-    render json: @people
+    if params[:sub].present?
+      person = Person.find_by(auth0_id: params[:sub])
+      if person
+        render json: [person]
+      else
+        render json: [], status: :not_found
+      end
+    else
+      @people = Person.all
+      render json: @people
+    end
   end
+
 
   # GET /people/1
   def show
@@ -18,6 +27,9 @@ class PeopleController < ApplicationController
   # POST /people
   def create
     @person = Person.new(person_params)
+    puts @person.valid?
+    puts @person.errors.full_messages
+
 
     if @person.save
       render json: @person, status: :created, location: @person
@@ -48,6 +60,6 @@ class PeopleController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def person_params
-      params.expect(person: [ :name ])
+      params.expect(person: [ :name, :auth0_id ])
     end
 end
