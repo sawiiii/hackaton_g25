@@ -8,9 +8,9 @@ class PeopleController < ApplicationController
     if params[:sub].present?
       person = Person.find_by(auth0_id: params[:sub])
       if person
-        render json: [person], status: :success
+        render json: [person], status: :ok
       else
-        render json: [], status: :success
+        render json: [], status: :ok
       end
     else
       @people = Person.all
