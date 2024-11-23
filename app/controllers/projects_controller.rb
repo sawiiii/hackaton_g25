@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
       @person = Person.find_by(auth0_id: params[:person_auth0_id])
       @projects = @person.projects
     else
-      @projects = Project.all.with_more_vacancies.not_mine(current_user.id).includes(:positions)
+      @projects = Project.all.with_more_vacancies.not_mine(current_user&.id).includes(:positions)
     end
 
     render json: @projects.as_json(
@@ -21,9 +21,15 @@ class ProjectsController < ApplicationController
     )
   end
 
+  
   # GET /projects/1
   def show
-    render json: @project
+    render json: @project.as_json(
+      include: {
+        positions: {},
+        owner: { only: [:auth0_id] }
+      }
+    )
   end
 
   # POST /projects
