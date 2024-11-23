@@ -1,13 +1,13 @@
 class ProjectsController < ApplicationController
 
   before_action :authorize
-  before_action :validate_current_user, only: :create
+  before_action :validate_current_user, only: [:create, :update, :destroy]
   before_action :set_project, only: %i[ show update destroy ]
 
   # GET /projects
   def index
-    if params.expect(:person_auth0_id)
-      @person = Person.find_by(auth0_id: params.expect(:person_auth0_id))
+    if params[:person_auth0_id].present?
+      @person = Person.find_by(auth0_id: params[:person_auth0_id])
       @projects = @person.projects
     else
       @projects = Project.all
@@ -49,18 +49,18 @@ class ProjectsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_project
-      @project = Project.find(params.expect(:id))
-    end
+  def set_project
+    @project = Project.find(params.expect(:id))
+  end
 
     # Only allow a list of trusted parameters through.
-    def project_params
-      params.expect(project: [ :name, :description, :owner_id ])
-    end
+  def project_params
+    params.expect(project: [ :name, :description, :owner_id ])
+  end
 
-    def validate_current_user
-      if current_user.nil?
-        render json: { message: "Unauthorized" }, status: :unauthorized
-      end
+  def validate_current_user
+    if current_user.auth0_id != params[:person_auth0_id]
+      render json: { message: "Forbidden" }, status: :forbidden
     end
+  end
 end

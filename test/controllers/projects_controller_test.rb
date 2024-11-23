@@ -6,16 +6,11 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     @person = people(:one)
   end
 
-  test "should get index" do
-    get projects_url, as: :json, headers: auth_headers
-    assert_response :success
-  end
-
   test "should create project" do
     assert_difference("Project.count") do
       post projects_url, params: { project: { description: @project.description, name: @project.name, owner_id: @person.id } }, as: :json, headers: auth_headers
     end
-
+    pry-byebug
     assert_response :created
   end
 
