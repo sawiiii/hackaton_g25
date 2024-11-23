@@ -23,7 +23,6 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
-    @current_user = Person.first
     @project = Project.new(project_params)
     @project.owner = @current_user
 

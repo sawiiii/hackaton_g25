@@ -4,11 +4,9 @@ class ApplicationsController < ApplicationController
   # GET /applications
   def index
     if params.expect(:position_id)
-      puts params.expect(:position_id)
       @position = Position.find(params.expect(:position_id))
 
       @applications = @position.applications
-      puts "si"
     else
       @applications = Application.all
     end
