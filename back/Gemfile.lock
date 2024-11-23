@@ -83,6 +83,8 @@ GEM
     brakeman (6.2.2)
       racc
     builder (3.3.0)
+    byebug (11.1.3)
+    coderay (1.1.3)
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -108,6 +110,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.8.2)
+    jwt (2.9.3)
+      base64
     kamal (2.3.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -130,6 +134,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.2)
     msgpack (1.7.5)
@@ -159,6 +164,12 @@ GEM
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
     psych (5.2.0)
       stringio
     puma (6.5.0)
@@ -288,7 +299,10 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  jwt
   kamal
+  pry
+  pry-byebug
   puma (>= 5.0)
   rails (~> 8.0.0)
   rubocop-rails-omakase
