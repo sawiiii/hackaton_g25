@@ -4,8 +4,6 @@ class MessagesController < ApplicationController
 
   # GET /messages
   def index
-    puts "Current user: #{current_user}"
-
     @messages = Message.all
 
     render json: @messages

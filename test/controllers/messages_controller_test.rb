@@ -6,31 +6,31 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get messages_url, as: :json
+    get messages_url, as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should create message" do
     assert_difference("Message.count") do
-      post messages_url, params: { message: { author: @message.author, content: @message.content } }, as: :json
+      post messages_url, params: { message: { author: @message.author, content: @message.content } }, as: :json, headers: auth_headers
     end
 
     assert_response :created
   end
 
   test "should show message" do
-    get message_url(@message), as: :json
+    get message_url(@message), as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should update message" do
-    patch message_url(@message), params: { message: { author: @message.author, content: @message.content } }, as: :json
+    patch message_url(@message), params: { message: { author: @message.author, content: @message.content } }, as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should destroy message" do
     assert_difference("Message.count", -1) do
-      delete message_url(@message), as: :json
+      delete message_url(@message), as: :json, headers: auth_headers
     end
 
     assert_response :no_content

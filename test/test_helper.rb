@@ -11,5 +11,8 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def auth_headers
+      { "Authorization" => "Bearer #{Rails.application.credentials.jwt_token}" }
+    end
   end
 end
