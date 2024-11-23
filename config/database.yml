@@ -19,7 +19,6 @@
 #  <<: *default
 #  database: storage/test.sqlite3
 
-
 # #Store production database in the storage/ directory, which by default
 # #is mounted as a persistent Docker volume in config/deploy.yml.
 #production:
@@ -38,7 +37,6 @@
 #    <<: *default
 #    database: storage/production_cable.sqlite3
 #    migrations_paths: db/cable_migrate
-
 
 # config/database.yml
 
@@ -59,7 +57,26 @@ test:
   database: hack_test
 
 production:
-  <<: *default
-  database: hack_master
-  username: my_api_app
-  password: <%= ENV['MY_API_APP_DATABASE_PASSWORD'] %>
+  primary:
+    <<: *default
+    database: hack_production
+    host: hack_api-db
+    password: <%= Rails.application.credentials.dig(:postgres, :password) %>
+  cache:
+    <<: *default
+    database: hack_production_cache
+    migrations_paths: db/cache_migrate
+    host: hack_api-db
+    password: <%= Rails.application.credentials.dig(:postgres, :password) %>
+  queue:
+    <<: *default
+    database: hack_production_queue
+    migrations_paths: db/queue_migrate
+    host: hack_api-db
+    password: <%= Rails.application.credentials.dig(:postgres, :password) %>
+  cable:
+    <<: *default
+    database: hack_production_cable
+    migrations_paths: db/cable_migrate
+    host: hack_api-db
+    password: <%= Rails.application.credentials.dig(:postgres, :password) %>
