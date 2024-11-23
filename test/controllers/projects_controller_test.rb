@@ -10,7 +10,6 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Project.count") do
       post projects_url, params: { project: { description: @project.description, name: @project.name, owner_id: @person.id } }, as: :json, headers: auth_headers
     end
-    pry-byebug
     assert_response :created
   end
 
