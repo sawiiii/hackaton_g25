@@ -3,14 +3,14 @@
 module Secured
   extend ActiveSupport::Concern
 
-  REQUIRES_AUTHENTICATION = { message: 'Requires authentication' }.freeze
+  REQUIRES_AUTHENTICATION = { message: "Requires authentication" }.freeze
   BAD_CREDENTIALS = {
-    message: 'Bad credentials'
+    message: "Bad credentials"
   }.freeze
   MALFORMED_AUTHORIZATION_HEADER = {
-    error: 'invalid_request',
-    error_description: 'Authorization header value must follow this format: Bearer access-token',
-    message: 'Bad credentials'
+    error: "invalid_request",
+    error_description: "Authorization header value must follow this format: Bearer access-token",
+    message: "Bad credentials"
   }.freeze
 
   def authorize
@@ -20,7 +20,7 @@ module Secured
 
     validation_response = Auth0Client.validate_token(token)
 
-    sub = validation_response.decoded_token.first.dig('sub')
+    sub = validation_response.decoded_token.first.dig("sub")
 
     request.env[:user_id] = sub
 
@@ -36,7 +36,7 @@ module Secured
   private
 
   def token_from_request
-    authorization_header_elements = request.headers['Authorization']&.split
+    authorization_header_elements = request.headers["Authorization"]&.split
 
     render json: REQUIRES_AUTHENTICATION, status: :unauthorized and return unless authorization_header_elements
 
@@ -46,7 +46,7 @@ module Secured
 
     scheme, token = authorization_header_elements
 
-    render json: BAD_CREDENTIALS, status: :unauthorized and return unless scheme.downcase == 'bearer'
+    render json: BAD_CREDENTIALS, status: :unauthorized and return unless scheme.downcase == "bearer"
 
     token
   end

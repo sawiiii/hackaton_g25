@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'jwt'
-require 'net/http'
+require "jwt"
+require "net/http"
 
 class Auth0Client
-  # Auth0 Client Objects 
+  # Auth0 Client Objects
   Error = Struct.new(:message, :status)
   Response = Struct.new(:decoded_token, :error)
 
-  # Helper Functions 
+  # Helper Functions
   def self.domain_url
     # "https://#{Rails.configuration.auth0.domain}/"
     "https://dev-x06xx52q.us.auth0.com/"
@@ -16,7 +16,7 @@ class Auth0Client
 
   def self.decode_token(token, jwks_hash)
     JWT.decode(token, nil, true, {
-                 algorithm: 'RS256',
+                 algorithm: "RS256",
                  iss: domain_url,
                  verify_iss: true,
                  aud: "https://hackaton.elflargo.com/", # Rails.configuration.auth0.audience,
@@ -30,12 +30,12 @@ class Auth0Client
     Net::HTTP.get_response jwks_uri
   end
 
-  # Token Validation 
+  # Token Validation
   def self.validate_token(token)
     jwks_response = get_jwks
 
     unless jwks_response.is_a? Net::HTTPSuccess
-      error = Error.new(message: 'Unable to verify credentials', status: :internal_server_error)
+      error = Error.new(message: "Unable to verify credentials", status: :internal_server_error)
       return Response.new(nil, error)
     end
 
@@ -45,7 +45,7 @@ class Auth0Client
 
     Response.new(decoded_token, nil)
   rescue JWT::VerificationError, JWT::DecodeError => e
-    error = Error.new('Bad credentials', :unauthorized)
+    error = Error.new("Bad credentials", :unauthorized)
     Response.new(nil, error)
   end
 end
