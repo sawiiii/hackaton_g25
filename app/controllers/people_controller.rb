@@ -1,6 +1,5 @@
 class PeopleController < ApplicationController
-
-  before_action :authorize
+  # before_action :authorize
   before_action :set_person, only: %i[ show update destroy ]
 
   # GET /people
@@ -8,7 +7,7 @@ class PeopleController < ApplicationController
     if params[:sub].present?
       person = Person.find_by(auth0_id: params[:sub])
       if person
-        render json: [person], status: :ok
+        render json: [ person ], status: :ok
       else
         render json: [], status: :ok
       end
@@ -27,9 +26,6 @@ class PeopleController < ApplicationController
   # POST /people
   def create
     @person = Person.new(person_params)
-    puts @person.valid?
-    puts @person.errors.full_messages
-
 
     if @person.save
       render json: @person, status: :created, location: @person
@@ -55,8 +51,6 @@ class PeopleController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_person
-      puts params
-      puts @current_user
       if params[:auth0_id].present?
         @person = Person.find_by(auth0_id: params.expect(:auth0_id))
       end
