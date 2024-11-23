@@ -1,4 +1,7 @@
 class ProjectsController < ApplicationController
+
+  before_action :authorize
+  #before_action :validate_current_user
   before_action :set_project, only: %i[ show update destroy ]
 
   # GET /projects
@@ -6,7 +9,6 @@ class ProjectsController < ApplicationController
     if params.expect(:person_auth0_id)
       @person = Person.find_by(auth0_id: params.expect(:person_auth0_id))
       @projects = @person.projects
-      puts "si"
     else
       @projects = Project.all
     end
@@ -21,7 +23,9 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
+    @current_user = Person.first
     @project = Project.new(project_params)
+    @project.owner = @current_user
 
     if @project.save
       render json: @project, status: :created, location: @project
@@ -53,5 +57,11 @@ class ProjectsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def project_params
       params.expect(project: [ :name, :description, :owner_id ])
+    end
+
+    def validate_current_user
+      if current_user.nil?
+        render json: { message: "Unauthorized" }, status: :unauthorized
+      end
     end
 end

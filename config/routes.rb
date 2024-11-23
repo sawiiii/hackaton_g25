@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   resources :people, param: :auth0_id
   resources :messages
 
+
+  post "people/projects/new", to: "projects#create"
+
   resources :people, param: :auth0_id do
     resources :projects do
       resources :positions do
