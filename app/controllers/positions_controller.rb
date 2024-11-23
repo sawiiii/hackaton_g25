@@ -3,7 +3,13 @@ class PositionsController < ApplicationController
 
   # GET /positions
   def index
-    @positions = Position.all
+    if params.expect(:project_id)
+      @project = Project.find(params.expect(:project_id))
+      @positions = @project.positions
+      puts "si"
+    else
+      @positions = Position.all
+    end
 
     render json: @positions
   end

@@ -1,20 +1,7 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-
 # db/seeds.rb
 
 # Clear existing data
-# db/seeds.rb
-
-# Clear existing data
+Application.destroy_all
 Position.destroy_all
 Project.destroy_all
 Person.destroy_all
@@ -30,9 +17,28 @@ project3 = Project.create!(name: "Project Gamma", description: "Description for 
 project4 = Project.create!(name: "Project Delta", description: "Description for Project Delta", owner: person2)
 
 # Create sample positions
-Position.create!(name: "Developer", project: project1)
-Position.create!(name: "Designer", project: project1)
-Position.create!(name: "Manager", project: project2)
-Position.create!(name: "Tester", project: project3)
-Position.create!(name: "Analyst", project: project4)
+position1 = Position.create!(name: "Developer", project: project1)
+position2 = Position.create!(name: "Designer", project: project1)
+position3 = Position.create!(name: "Manager", project: project2)
+position4 = Position.create!(name: "Tester", project: project3)
+position5 = Position.create!(name: "Analyst", project: project4)
+position6 = Position.create!(name: "Architect", project: project1)
+position7 = Position.create!(name: "Product Owner", project: project2)
+position8 = Position.create!(name: "Scrum Master", project: project3)
+position9 = Position.create!(name: "DevOps Engineer", project: project4)
+position10 = Position.create!(name: "QA Engineer", project: project1)
+
+# Create sample applications
+Application.create!(motivation: "I am very motivated to join this project.", position: position1, person: person1, status: :review)
+Application.create!(motivation: "I am very motivated to join this project.", position: position1, person: person2, status: :review)
+Application.create!(motivation: "I have the skills required for this position.", position: position2, person: person2, status: :review)
+Application.create!(motivation: "I am excited about this opportunity.", position: position3, person: person1, status: :review)
+Application.create!(motivation: "I believe I can contribute significantly.", position: position4, person: person2, status: :review)
+Application.create!(motivation: "I am passionate about this field.", position: position5, person: person1, status: :review)
+Application.create!(motivation: "I am eager to work as an Architect.", position: position6, person: person2, status: :review)
+Application.create!(motivation: "I have experience as a Product Owner.", position: position7, person: person1, status: :review)
+Application.create!(motivation: "I am skilled in Scrum methodologies.", position: position8, person: person2, status: :review)
+Application.create!(motivation: "I have a strong background in DevOps.", position: position9, person: person1, status: :review)
+Application.create!(motivation: "I am proficient in QA processes.", position: position10, person: person2, status: :review)
+
 puts "Seeds created successfully"

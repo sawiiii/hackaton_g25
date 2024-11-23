@@ -20,12 +20,12 @@ module Secured
 
     validation_response = Auth0Client.validate_token(token)
 
-    sub = validation_response.decoded_token.first.dig("sub")
+    sub = validation_response.decoded_token&.first&.dig("sub")
 
     request.env[:user_id] = sub
 
-    # @current_user = User.find_by(auth0_id: sub)
-    @current_user = sub
+    @current_user = Person.find_by(auth0_id: sub)
+    #@current_user = sub
     request.env[:current_user] = @current_user
 
     return unless (error = validation_response.error)
