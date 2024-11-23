@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   resources :projects do
     resources :positions
   end
-  resources :people, param: :auth0_id
   resources :messages
 
 
@@ -11,7 +10,7 @@ Rails.application.routes.draw do
   resources :people, param: :auth0_id do
     resources :projects do
       resources :positions do
-        resources :applications, only: [:index, :show]
+        resources :applications, only: [ :index, :show ]
       end
     end
   end

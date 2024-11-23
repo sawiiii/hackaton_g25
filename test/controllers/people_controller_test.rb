@@ -12,9 +12,6 @@ class PeopleControllerTest < ActionDispatch::IntegrationTest
 
   test "should get index with sub" do
     get people_url, as: :json, headers: auth_headers
-    json_response = JSON.parse(response.body)
-    puts "--> #{json_response}"
-
     assert_response :success
   end
 
@@ -27,19 +24,18 @@ class PeopleControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show person" do
-    get person_url(@person), as: :json, headers: auth_headers
+    get person_url(@person.auth0_id), as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should update person" do
-    puts "person: #{Person.first.auth0_id}"
     patch person_url(Person.first), params: { person: { name: Person.first.name } }, as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should destroy person" do
     assert_difference("Person.count", -1) do
-      delete person_url(@person), as: :json, headers: auth_headers
+      delete person_url(@person.auth0_id), as: :json, headers: auth_headers
     end
 
     assert_response :no_content

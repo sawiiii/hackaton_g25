@@ -1,5 +1,4 @@
 class ProjectsController < ApplicationController
-
   before_action :authorize
   before_action :validate_current_user, only: [:create, :update, :destroy]
   before_action :set_project, only: %i[ show update destroy ]

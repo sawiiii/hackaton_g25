@@ -1,6 +1,5 @@
 class PeopleController < ApplicationController
-
-  before_action :authorize
+  # before_action :authorize
   before_action :set_person, only: %i[ show update destroy ]
 
   # GET /people
@@ -8,7 +7,7 @@ class PeopleController < ApplicationController
     if params[:sub].present?
       person = Person.find_by(auth0_id: params[:sub])
       if person
-        render json: [person], status: :ok
+        render json: [ person ], status: :ok
       else
         render json: [], status: :ok
       end
