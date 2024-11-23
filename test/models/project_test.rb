@@ -14,5 +14,4 @@ class ProjectTest < ActiveSupport::TestCase
     project = Project.new(name: "New Project", description: "Project description", owner: person)
     assert project.save, "Saved the project without a name"
   end
-
 end

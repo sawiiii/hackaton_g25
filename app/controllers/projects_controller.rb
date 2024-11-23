@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :authorize
-  before_action :validate_current_user, only: [:create, :update, :destroy]
+  before_action :validate_current_user, only: [ :create, :update, :destroy ]
   before_action :set_project, only: %i[ show update destroy ]
 
   # GET /projects
@@ -53,12 +53,12 @@ class ProjectsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+  # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params.expect(:id))
   end
 
-    # Only allow a list of trusted parameters through.
+  # Only allow a list of trusted parameters through.
   def project_params
     params.expect(project: [ :name, :description, :owner_id ])
   end

@@ -20,18 +20,18 @@ class PositionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show position" do
-    get project_positions_path(@project, @position), as: :json, headers: auth_headers
+    get project_position_path(@project, @position), as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should update position" do
-    patch project_positions_path(@project, @position), params: { position: { description: @position.description, name: @position.name, vacancies: @position.vacancies } }, as: :json, headers: auth_headers
+    patch project_position_path(@project, @position), params: { position: { description: @position.description, name: @position.name, vacancies: @position.vacancies } }, as: :json, headers: auth_headers
     assert_response :success
   end
 
   test "should destroy position" do
     assert_difference("Position.count", -1) do
-      delete project_positions_path(@project, @position), as: :json, headers: auth_headers
+      delete project_position_path(@project, @position), as: :json, headers: auth_headers
     end
 
     assert_response :no_content
