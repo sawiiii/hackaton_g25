@@ -20,7 +20,7 @@ module Secured
 
     validation_response = Auth0Client.validate_token(token)
 
-    sub = validation_response.decoded_token.first.dig("sub")
+    sub = validation_response.decoded_token&.first&.dig("sub")
 
     request.env[:user_id] = sub
 

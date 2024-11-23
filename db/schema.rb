@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_23_155422) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_23_164600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "applications", force: :cascade do |t|
+    t.text "motivation"
+    t.bigint "position_id"
+    t.bigint "person_id"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_applications_on_person_id"
+    t.index ["position_id"], name: "index_applications_on_position_id"
+  end
 
   create_table "messages", force: :cascade do |t|
     t.string "author"

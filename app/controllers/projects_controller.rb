@@ -3,7 +3,13 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    @projects = Project.all
+    if params.expect(:person_auth0_id)
+      @person = Person.find_by(auth0_id: params.expect(:person_auth0_id))
+      @projects = @person.projects
+      puts "si"
+    else
+      @projects = Project.all
+    end
 
     render json: @projects
   end
