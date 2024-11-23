@@ -5,7 +5,6 @@ class ApplicationsController < ApplicationController
   def index
     if params.expect(:position_id)
       @position = Position.find(params.expect(:position_id))
-
       @applications = @position.applications
     else
       @applications = Application.all
@@ -21,7 +20,13 @@ class ApplicationsController < ApplicationController
 
   # POST /applications
   def create
+    if current_user
+      render json: {}, status: :unauthorized
+    end
+    set_position
     @application = Application.new(application_params)
+    @application.position = @position
+    @application.person = current_user
 
     if @application.save
       render json: @application, status: :created, location: @application
@@ -45,6 +50,10 @@ class ApplicationsController < ApplicationController
   end
 
   private
+
+  def set_position
+    @position = Position.find(params[:position_id])
+  end
     # Use callbacks to share common setup or constraints between actions.
     def set_application
       @application = Application.find(params.expect(:id))

@@ -2,7 +2,7 @@ require "test_helper"
 
 class PeopleControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @person = Person.create!(name: "Test User", auth0_id: "test_auth0_id")
+    @person = Person.create!(name: "Test User", auth0_id: "12345456")
   end
 
   test "should get index" do
@@ -15,9 +15,9 @@ class PeopleControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should not create person" do
+  test "should create person" do
     assert_difference("Person.count") do
-      post people_url, params: { person: { name: @person.name, auth0_id: @person.auth0_id } }, as: :json, headers: auth_headers
+      post people_url, params: { person: { name: @person.name, auth0_id: '123456' } }, as: :json, headers: auth_headers
     end
 
     assert_response :created
@@ -29,7 +29,7 @@ class PeopleControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update person" do
-    patch person_url(@person.auth0_id), params: { person: { name: @person.name } }, as: :json, headers: auth_headers
+    patch person_url(Person.first), params: { person: { name: Person.first.name } }, as: :json, headers: auth_headers
     assert_response :success
   end
 
