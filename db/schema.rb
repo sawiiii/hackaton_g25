@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_23_145342) do
 
   create_table "people", force: :cascade do |t|
     t.string "name"
+    t.string "auth0_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
