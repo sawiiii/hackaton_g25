@@ -26,8 +26,8 @@ class ProjectsController < ApplicationController
     render json: @projects.as_json(
       include: {
         positions: {},
-        categories: { only: [:name] },
-        owner: { only: [:name, :auth0_id] }
+        categories: { only: [ :name ] },
+        owner: { only: [ :name, :auth0_id ] }
       }
     )
   end
@@ -43,19 +43,26 @@ class ProjectsController < ApplicationController
       position.vacancies > position.applications.where(status: "accepted").count
     end
 
-    render json: @project.as_json(
+    data = @project.as_json(
       include: {
         positions: {
-          only: [:id, :name, :description, :vacancies],
-          methods: [:has_vacancies_left, :applications_count],
+          only: [ :id, :name, :description, :vacancies ],
+          methods: [ :has_vacancies_left, :applications_count ],
           objects: filtered_positions
         },
-        categories: { only: [:name] },
+        categories: { only: [ :name ] },
         owner: {
-          only: [:auth0_id]
+          only: [ :auth0_id ]
         }
       }
     )
+
+    if @project.owner == @current_user
+      applications = JSON.parse(@project.positions.map(&:applications).flatten.to_json include: :person)
+      data[:applications] = applications
+    end
+
+    render json: data
   end
 
   # POST /projects
@@ -71,8 +78,8 @@ class ProjectsController < ApplicationController
       render json: @project.as_json(
         include: {
           positions: {},
-          categories: { only: [:name] },
-          owner: { only: [:name, :auth0_id] }
+          categories: { only: [ :name ] },
+          owner: { only: [ :name, :auth0_id ] }
         }
       ), status: :created, location: @project
     else
@@ -106,7 +113,6 @@ class ProjectsController < ApplicationController
   end
 
   def validate_current_user
-
     if current_user.nil? || current_user&.auth0_id != params[:person_auth0_id]
       render json: { message: "Forbidden" }, status: :forbidden
     end
