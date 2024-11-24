@@ -22,6 +22,7 @@ class ProjectsController < ApplicationController
     render json: @projects.as_json(
       include: {
         positions: {},
+        categories: { only: [:name] },
         owner: { only: [:name, :auth0_id] }
       }
     )
@@ -45,6 +46,7 @@ class ProjectsController < ApplicationController
           methods: [:has_vacancies_left, :applications_count],
           objects: filtered_positions
         },
+        categories: { only: [:name] },
         owner: {
           only: [:auth0_id]
         }
@@ -58,7 +60,17 @@ class ProjectsController < ApplicationController
     @project.owner = @current_user
 
     if @project.save
-      render json: @project, status: :created, location: @project
+      tags = GenerateLabelsService.new(@project&.description).call
+      tags&.each do |category_name|
+        ProjectCategory.create!(project: @project, category: Category.find_by(name: category_name))
+      end
+      render json: @project.as_json(
+        include: {
+          positions: {},
+          categories: { only: [:name] },
+          owner: { only: [:name, :auth0_id] }
+        }
+      ), status: :created, location: @project
     else
       render json: @project.errors, status: :unprocessable_entity
     end
@@ -90,6 +102,7 @@ class ProjectsController < ApplicationController
   end
 
   def validate_current_user
+
     if current_user.nil? || current_user&.auth0_id != params[:person_auth0_id]
       render json: { message: "Forbidden" }, status: :forbidden
     end

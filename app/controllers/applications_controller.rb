@@ -86,7 +86,7 @@ class ApplicationsController < ApplicationController
     if application_params_status[:status].present? && application_params_status[:status] == "accepted"
       position =  @application.position
       accepted_applications_count = position.applications.where(status: "accepted").count
-      puts "accepted_applications_count: #{accepted_applications_count} - position.vacancies: #{position.vacancies}"
+      #puts "accepted_applications_count: #{accepted_applications_count} - position.vacancies: #{position.vacancies}"
       if accepted_applications_count >= position.vacancies || check_if_is_on_project(@application)
         return render json: { error: "Position is already full or you cannot be again on the same project" }, status: :forbidden
       end
@@ -140,7 +140,7 @@ class ApplicationsController < ApplicationController
 
     accepted_applications_count = position.applications.where(status: "accepted").count
 
-    puts "accepted_applications_count: #{accepted_applications_count} - position.vacancies: #{position.vacancies}"
+    #puts "accepted_applications_count: #{accepted_applications_count} - position.vacancies: #{position.vacancies}"
     if accepted_applications_count <= position.vacancies
       project.members << application.person unless project.members.include?(application.person)
     else

@@ -5,6 +5,9 @@ class Project < ApplicationRecord
   has_many :project_memberships
   has_many :members, through: :project_memberships, source: :person
 
+  has_many :project_categories
+  has_many :categories, through: :project_categories
+
   validates :name, on: :create, presence: true
   validates :description, on: :create, presence: true
   validates :owner, on: :create, presence: true

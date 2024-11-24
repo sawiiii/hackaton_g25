@@ -4,8 +4,25 @@
 Application.destroy_all
 Position.destroy_all
 ProjectMembership.destroy_all
+ProjectCategory.destroy_all
 Project.destroy_all
 Person.destroy_all
+Category.destroy_all
+
+# Create sample users
+people = [
+  { name: "John Doe", auth0_id: "yMQEbIbdtBTkPYxONcxbaTmSSuEfMKIF@clients" },
+  { name: "Jane Smith", auth0_id: "auth0_654321" },
+  { name: "Alice Johnson", auth0_id: "auth0_987654" },
+  { name: "Bob Brown", auth0_id: "auth0_456789" }
+]
+
+# Tripling users
+3.times do |i|
+  people << { name: "Test User #{i + 1}", auth0_id: "auth0_test_#{i + 1}" }
+end
+
+category_records = Category::CATEGORIES.map { |category_name| Category.create!(name: category_name) }
 
 # Create sample users
 people = [
@@ -22,80 +39,123 @@ end
 
 people_records = people.map { |person| Person.create!(person) }
 
-# Create sample projects for each user
-projects = {}
-3.times do
-  people_records.each_with_index do |owner, i|
-    projects["Project #{('A'..'Z').to_a.sample}-#{i + 1}"] = owner
-  end
-end
+# Create sample projects
+projects = [
+  { name: "E-Learning VR Platform", description: "Una plataforma para simular laboratorios educativos utilizando realidad virtual."  },
+  { name: "AI Telemedicine App", description: "Aplicación móvil que utiliza AI para diagnóstico inicial y conexión con médicos en tiempo real."},
+  { name: "Renewable Energy Manager", description: "Un sistema para monitorear y optimizar el uso de recursos renovables en empresas y hogares." },
+  { name: "Industrial Drone Management", description: "Una herramienta para la planificación y control de drones en tareas industriales." },
+  { name: "Gamer Streaming Platform", description: "Una aplicación que combina streaming, interacciones en vivo y gestión de torneos para gamers." },
+  { name: "Smart Cities Automation", description: "Un sistema IoT para automatizar servicios públicos como iluminación, tráfico y recolección de basura."},
+  { name: "Personal Finance Blockchain App", description: "Una billetera digital con seguimiento de gastos y transferencias seguras en blockchain." },
+  { name: "Collaborative Media Production", description: "Una aplicación para edición colaborativa de video y audio en la nube." },
+  { name: "Sustainable Fashion Marketplace", description: "Un marketplace dedicado a marcas de moda sostenible con análisis de impacto ambiental." },
+  { name: "AI Citizen Security", description: "Un software que utiliza cámaras de seguridad e IA para detectar comportamientos sospechosos."},
+  { name: "Personalized Tourism App", description: "Una app que crea itinerarios turísticos personalizados basados en datos en tiempo real." },
+  { name: "Startup Project Management", description: "Un sistema que combina gestión de tareas, finanzas y objetivos para startups." },
+  { name: "AI Architecture Design", description: "Un programa que ayuda a arquitectos a diseñar estructuras optimizadas con algoritmos."},
+  { name: "Supply Chain Management System", description: "Una solución para optimizar cadenas de suministro y transporte." },
+  { name: "EdTech Gamified Learning", description: "Una aplicación educativa que utiliza mecánicas de juegos para mejorar el aprendizaje." }
+]
 
-project_records = projects.map do |name, owner|
-  Project.create!(name: name, description: "Description for #{name}", owner: owner)
+project_records = projects.map do |project|
+  new_project = Project.create!(name: project[:name], description: project[:description], owner: people_records.sample)
+
+  tags = GenerateLabelsService.new(new_project.description).call
+
+  puts "--> tag: #{tags}"
+
+  tags&.each do |category_name|
+    ProjectCategory.create!(project: new_project, category: Category.find_by(name: category_name))
+  end
+  new_project
 end
 
 # Create sample positions for each project
 positions = []
-project_records.each_with_index do |project, i|
-  6.times do |j| # Tripling positions
+project_records.each do |project|
+  4.times do |j|
     positions << Position.create!(
       name: "Position #{j + 1} for #{project.name}",
       project: project,
-      vacancies: rand(2..5) # Random vacancies for variety
+      vacancies: rand(3..5)
     )
   end
 end
 
-# Create applications, ensuring project owners don't apply to their own projects
+# Create applications for positions
 positions.each do |position|
+  max_applications = (position.vacancies / 3.0).ceil
   eligible_applicants = people_records.reject { |person| person == position.project.owner }
 
-  # Create pending applications for each position
-  rand(2..4).times do
-    applicant = eligible_applicants.sample
+  eligible_applicants.sample(max_applications).each do |applicant|
     Application.create!(
-      motivation: "I am motivated to apply for #{position.name}",
+      motivation: "I want to work on #{position.name}",
       position: position,
       person: applicant,
-      status: "pending" # Explicitly setting to pending
+      status: rand < 0.5 ? "accepted" : "pending"
     )
-  end
-end
-
-# Accept/reject applications such that less than 1/3 of positions are full
-positions.each do |position|
-  accepted_count = 0
-  position.applications.where(status: "pending").each do |application|
-    if accepted_count < (position.vacancies / 3.0).floor
-      application.update!(status: "accepted")
-      position.project.members << application.person
-      accepted_count += 1
-    elsif rand < 0.3
-      application.update!(status: "rejected")
-    end
-  end
-end
-
-# Ensure every person is a member of at least one project
-people_records.each do |person|
-  unless person.member_projects.any?
-    project_to_join = project_records.reject { |proj| proj.owner == person }.sample
-    position = project_to_join.positions.sample
-    Application.create!(
-      motivation: "I am eager to contribute to #{project_to_join.name}",
-      position: position,
-      person: person,
-      status: "pending" # Pending membership applications
-    )
-  end
-end
-
-# Ensure every person owns at least one project
-people_records.each do |person|
-  unless project_records.any? { |proj| proj.owner == person }
-    project = project_records.sample
-    project.update!(owner: person)
   end
 end
 
 puts "Seeds created successfully"
+
+
+people_records = people.map { |person| Person.create!(person) }
+#
+# # Create categories
+# category_records = Category::CATEGORIES.map do |category_name|
+#   Category.create!(name: category_name)
+# end
+#
+# # Create sample projects for each user
+# projects = {}
+# 3.times do
+#   people_records.each_with_index do |owner, i|
+#     projects["Project #{('A'..'Z').to_a.sample}-#{i + 1}"] = owner
+#   end
+# end
+#
+# project_records = projects.map do |name, owner|
+#   project = Project.create!(
+#     name: name,
+#     description: "Description for #{name}",
+#     owner: owner
+#   )
+#   # Assign 2 to 4 random categories to each project
+#   categories_for_project = category_records.sample(rand(1..2))
+#   categories_for_project.each do |category|
+#     ProjectCategory.create!(project: project, category: category)
+#   end
+#   project
+# end
+#
+# # Create sample positions for each project
+# positions = []
+# project_records.each do |project|
+#   category_names = project.categories.pluck(:name).join(", ")
+#   3.times do |j|
+#     positions << Position.create!(
+#       name: "Position #{j + 1} in #{category_names} for #{project.name}",
+#       project: project,
+#       vacancies: rand(3..5)
+#     )
+#   end
+# end
+#
+# # Create applications for positions
+# positions.each do |position|
+#   max_applications = (position.vacancies / 3.0).ceil
+#   eligible_applicants = people_records.reject { |person| person == position.project.owner }
+#
+#   eligible_applicants.sample(max_applications).each do |applicant|
+#     Application.create!(
+#       motivation: "I want to work on #{position.name}",
+#       position: position,
+#       person: applicant,
+#       status: rand < 0.5 ? "accepted" : "pending"
+#     )
+#   end
+# end
+#
+# puts "Seeds created successfully"
