@@ -5,9 +5,9 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
+    tag = Category.where(name: params[:tag]) if params[:tag].present?
     if params[:person_auth0_id].present?
       @person = Person.find_by(auth0_id: params[:person_auth0_id])
-
       if params[:owner].present?
         if params[:owner] == "true"
           @projects = @person.projects || []
@@ -17,6 +17,10 @@ class ProjectsController < ApplicationController
       end
     else
       @projects = Project.all.with_more_vacancies_v2.not_mine(current_user&.id).includes(:positions) || []
+    end
+
+    if tag&.present?
+      @projects = @projects&.joins(:categories)&.where(categories: tag)
     end
 
     render json: @projects.as_json(
