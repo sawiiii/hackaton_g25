@@ -80,7 +80,7 @@ class ApplicationsController < ApplicationController
     end
 
     # si el estado quiere ser aceptado y ya esta el maximo se rechaza
-    if application_params[:status].present? && application_params[:status] == "accepted"
+    if application_params_status[:status].present? && application_params_status[:status] == "accepted"
       position =  @application.position
       accepted_applications_count = position.applications.where(status: "accepted").count
       puts "accepted_applications_count: #{accepted_applications_count} - position.vacancies: #{position.vacancies}"
@@ -89,8 +89,8 @@ class ApplicationsController < ApplicationController
       end
     end
 
-    if allowed_statuses.present? && allowed_statuses.include?(application_params[:status])
-      if @application.update(application_params)
+    if allowed_statuses.present? && allowed_statuses.include?(application_params_status[:status])
+      if @application.update(application_params_status)
         if @application.status == "accepted"
           add_member_to_project(@application)
         end
@@ -154,7 +154,11 @@ class ApplicationsController < ApplicationController
   end
 
   def application_params
-    params.require(:application).permit(:status, :motivation)
+    params.require(:application).permit(:motivation)
+  end
+
+  def application_params_status
+    params.require(:application).permit(:status)
   end
 
   def validate_current_user
