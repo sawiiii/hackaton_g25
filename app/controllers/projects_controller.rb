@@ -30,12 +30,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1
   def show
-    render json: @project.as_json(
-      include: {
-        positions: {},
-        owner: { only: [:auth0_id] }
-      }
-    )
+    @project = Project.find(params[:id])
+    render json: @project.as_json_with_filtered_positions
   end
 
   # POST /projects

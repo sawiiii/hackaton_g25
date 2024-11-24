@@ -3,4 +3,8 @@ class Position < ApplicationRecord
   has_many :applications
 
   validates :name, on: :create, presence: true
+
+  def filtered_vacancies
+    applications.where(status: "accepted").count
+  end
 end
