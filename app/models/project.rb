@@ -17,12 +17,29 @@ class Project < ApplicationRecord
       .where('positions.vacancies > positions.applications_count')
       .distinct
   }
+  #
+  # scope :with_more_vacancies_v2, -> {
+  #   joins(positions: :applications)
+  #     .where(applications: { status: 'accepted' })
+  #     .group('projects.id', 'positions.id')
+  #     .having('positions.vacancies > COUNT(applications.id)')
+  #     .distinct
+  # }
+
+  # scope :with_more_vacancies_v2, -> {
+  #   joins(positions: :applications)
+  #     .where(applications: { status: %w[accepted pending declined] })
+  #     .group('projects.id', 'positions.id')
+  #     .having('positions.vacancies > COUNT(applications.id)')
+  #     .distinct
+  # }
 
   scope :with_more_vacancies_v2, -> {
-    joins(positions: :applications)
-      .where(applications: { status: 'accepted' })
+    left_outer_joins(:positions)
+      .left_outer_joins(positions: :applications)
+      .where('positions.id IS NULL OR applications.status IS NULL OR applications.status IN (?)', %w[0 1 3])
       .group('projects.id', 'positions.id')
-      .having('positions.vacancies > COUNT(applications.id)')
+      .having('positions.vacancies IS NULL OR positions.vacancies > COUNT(applications.id)')
       .distinct
   }
 
