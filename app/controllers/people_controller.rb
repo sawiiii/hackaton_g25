@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  # before_action :authorize
+  before_action :authorize
   before_action :set_person, only: %i[ show update destroy ]
 
   # GET /people
