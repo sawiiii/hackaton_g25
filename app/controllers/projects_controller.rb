@@ -6,13 +6,10 @@ class ProjectsController < ApplicationController
   # GET /projects
   def index
     if params[:person_auth0_id].present?
-      puts "1"
       @person = Person.find_by(auth0_id: params[:person_auth0_id])
 
       if params[:owner].present?
-        puts "2"
         if params[:owner] == "true"
-          puts "3"
           @projects = @person.projects
         end
       else
