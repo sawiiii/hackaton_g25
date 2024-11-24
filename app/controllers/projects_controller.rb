@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
       include: {
         positions: {
           only: [:id, :name, :description, :vacancies],
-          methods: [:has_vacancies_left?, :applications_count],
+          methods: [:has_vacancies_left, :applications_count],
           objects: filtered_positions
         },
         owner: {
