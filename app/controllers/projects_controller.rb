@@ -10,10 +10,10 @@ class ProjectsController < ApplicationController
 
       if params[:owner].present?
         if params[:owner] == "true"
-          @projects = @person.projects
+          @projects = @person.projects || []
         end
       else
-        @projects = @person.member_projects
+        @projects = @person.member_projects || []
       end
     else
       @projects = Project.all.with_more_vacancies_v2.not_mine(current_user&.id).includes(:positions)

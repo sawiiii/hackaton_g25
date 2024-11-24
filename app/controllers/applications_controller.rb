@@ -27,18 +27,21 @@ class ApplicationsController < ApplicationController
     end
     set_position
     if @position.project.owner == current_user
+      puts "You cannot apply to positions in your own project"
       return render json: { error: "You cannot apply to positions in your own project" }, status: :forbidden
     end
 
     ids = @position.applications.pluck(:person_id)
 
     if ids.include?(current_user.id)
+      puts "You cannot apply to the same position more than once"
       return render json: { error: "You cannot apply to the same position more than once" }, status: :forbidden
     end
 
     accepted = @position.applications.where(status: "accepted").count
     if accepted >= @position.vacancies
-      return render json: { error: "Position is already full" }, status: :forbidden
+      puts "Position is already full"
+      return render json: { error: "Position is already full" }, status: :bad_request
     end
 
     # validar posiciones

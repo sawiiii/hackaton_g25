@@ -6,6 +6,9 @@ Rails.application.routes.draw do
 
 
   # post "people/projects/new", to: "projects#create"
+  resources :positions do
+    resources :applications, only: [ :create ]
+  end
 
   resources :people, param: :auth0_id do
     resources :projects do
@@ -21,9 +24,6 @@ Rails.application.routes.draw do
     put "/applications/:id/change_status", to: "applications#change_status"
   end
 
-  resources :positions do
-    resources :applications, only: [ :create ]
-  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
