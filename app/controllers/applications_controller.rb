@@ -53,8 +53,11 @@ class ApplicationsController < ApplicationController
     if @application.save
       render json: @application, status: :created
     else
-      render json: @application.errors, status: :unprocessable_entity
+      raise StandardError.new(@application.errors.full_messages.join(", "))
     end
+  rescue => e
+    puts e.full_message
+    render json: {error: e}, status: :unprocessable_entity
   end
 
   # PATCH/PUT /applications/1
