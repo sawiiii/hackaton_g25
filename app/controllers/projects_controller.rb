@@ -5,12 +5,18 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    # filtro para no mostrar los que estén llenos
     if params[:person_auth0_id].present?
       @person = Person.find_by(auth0_id: params[:person_auth0_id])
-      @projects = @person.projects
+
+      if params[:owner].present?
+        if params[:owner] == "true"
+          @projects = @person.projects
+        end
+      else
+        @projects = @person.member_projects
+      end
     else
-      @projects = Project.all.with_more_vacancies.not_mine(current_user&.id).includes(:positions)
+      @projects = Project.all.with_more_vacancies_v2.not_mine(current_user&.id).includes(:positions)
     end
 
     render json: @projects.as_json(

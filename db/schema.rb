@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_23_213321) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_23_233949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,15 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_23_213321) do
     t.index ["project_id"], name: "index_positions_on_project_id"
   end
 
+  create_table "project_memberships", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "person_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_project_memberships_on_person_id"
+    t.index ["project_id"], name: "index_project_memberships_on_project_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -59,5 +68,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_23_213321) do
     t.index ["owner_id"], name: "index_projects_on_owner_id"
   end
 
+  add_foreign_key "project_memberships", "people"
+  add_foreign_key "project_memberships", "projects"
   add_foreign_key "projects", "people", column: "owner_id"
 end
