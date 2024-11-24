@@ -1,5 +1,4 @@
 class ApplicationsController < ApplicationController
-
   before_action :authorize
   before_action :set_application, only: %i[ show update destroy change_status ]
   before_action :validate_current_user, only: [ :user_application, :user_applications ]
@@ -23,8 +22,8 @@ class ApplicationsController < ApplicationController
 
   # POST /applications
   def create
-    if current_user
-      render json: {}, status: :unauthorized
+    if !current_user
+      return render json: {}, status: :unauthorized
     end
     set_position
     if @position.project.owner == current_user
@@ -72,9 +71,9 @@ class ApplicationsController < ApplicationController
   def change_status
     allowed_statuses = nil
     if @application.position.project.owner == current_user
-      allowed_statuses = ["accepted", "rejected"]
+      allowed_statuses = [ "accepted", "rejected" ]
     elsif @application.person == current_user
-      allowed_statuses = ["declined"]
+      allowed_statuses = [ "declined" ]
     end
 
     # si el estado quiere ser aceptado y ya esta el maximo se rechaza
@@ -160,5 +159,4 @@ class ApplicationsController < ApplicationController
       render json: { message: "Forbidden" }, status: :forbidden
     end
   end
-
 end
