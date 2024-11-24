@@ -62,12 +62,14 @@ positions.each do |position|
   end
 end
 
-# Accept/reject only a subset of applications, leaving others as pending
+# Accept/reject applications such that less than 1/3 of positions are full
 positions.each do |position|
+  accepted_count = 0
   position.applications.where(status: "pending").each do |application|
-    if rand < 0.5 && position.applications.where(status: "accepted").count < position.vacancies
+    if accepted_count < (position.vacancies / 3.0).floor
       application.update!(status: "accepted")
       position.project.members << application.person
+      accepted_count += 1
     elsif rand < 0.3
       application.update!(status: "rejected")
     end
