@@ -25,17 +25,4 @@ class Project < ApplicationRecord
 
   scope :not_mine, ->(id) { where('owner_id != ?', id) }
 
-  def as_json_with_filtered_positions
-    as_json(
-      include: {
-        positions: {
-          only: [:id, :name, :vacancies],
-          methods: [:filtered_vacancies]
-        },
-        owner: {
-          only: [:auth0_id]
-        }
-      }
-    )
-  end
 end

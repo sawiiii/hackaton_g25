@@ -16,7 +16,7 @@ class ProjectsController < ApplicationController
         @projects = @person.member_projects || []
       end
     else
-      @projects = Project.all.with_more_vacancies_v2.not_mine(current_user&.id).includes(:positions)
+      @projects = Project.all.with_more_vacancies_v2.not_mine(current_user&.id).includes(:positions) || []
     end
 
     render json: @projects.as_json(
@@ -30,8 +30,26 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1
   def show
-    @project = Project.find(params[:id])
-    render json: @project.as_json_with_filtered_positions
+    # Fetch the project including its positions with their applications
+    @project = Project.includes(positions: :applications).find(params[:id])
+
+    # Filter positions for the project based on the condition
+    filtered_positions = @project.positions.select do |position|
+      position.vacancies > position.applications.where(status: "accepted").count
+    end
+
+    render json: @project.as_json(
+      include: {
+        positions: {
+          only: [:id, :name, :description, :vacancies],
+          methods: [:has_vacancies_left?, :applications_count],
+          objects: filtered_positions
+        },
+        owner: {
+          only: [:auth0_id]
+        }
+      }
+    )
   end
 
   # POST /projects
