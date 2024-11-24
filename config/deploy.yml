@@ -7,7 +7,7 @@ image: hackaton/rails
 # Deploy to these servers.
 servers:
   web:
-    - 3.89.92.146
+    - 34.226.129.219
   # job:
   #   hosts:
   #     - 192.168.0.1
