@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :people do
     get "/applications", to: "applications#user_applications"
     get "/applications/:id", to: "applications#user_application"
+    put "/applications/:id/change_status", to: "applications#change_status"
   end
 
   resources :positions do

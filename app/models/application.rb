@@ -4,5 +4,5 @@ class Application < ApplicationRecord
 
   belongs_to :person
 
-  enum :status, [ :pending, :accepted, :rejected ]
+  enum :status, [ :pending, :accepted, :rejected, :declined ]
 end
