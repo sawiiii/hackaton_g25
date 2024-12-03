@@ -40,7 +40,7 @@ gem "jwt"
 
 # To use bedrock
 gem "aws-sdk-core", "~> 3"
-gem "aws-sdk-bedrockruntime", "~> 1.3"
+gem "aws-sdk-bedrockruntime", "~> 1.32"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
